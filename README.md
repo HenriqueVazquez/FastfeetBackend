@@ -3,11 +3,11 @@
 </h1>
 
 <h3 align="center">
-  Desafio 2: FastFeet, o início
+  Desafio 3: FastFeet, o início
 </h3>
 
 <h3 align="center">
-  :warning: Etapa 1/4 do Desafio Final :warning:
+  :warning: Etapa 2/4 do Desafio Final :warning:
 </h3>
 
 <p align="center">
@@ -19,8 +19,8 @@
 
   <img alt="License" src="https://img.shields.io/badge/license-MIT-blueviolet">
 
-  <a href="https://github.com/HenriqueVazquez/Desafio-2---inicio-fastfeet/stargazers">
-    <img alt="Stargazers" src="https://img.shields.io/github/stars/HenriqueVazquez/Desafio-2---inicio-fastfeet?style=social">
+  <a href="https://github.com/HenriqueVazquez/FastfeetBackend/blob/main/FastFeet.json">
+    <img alt="Stargazers" src="https://img.shields.io/github/stars/HenriqueVazquez/FastFeet-backend?style=social">
   </a>
 </p>
 
