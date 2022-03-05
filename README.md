@@ -87,7 +87,7 @@ Importe o arquivo `fastfeet.json` no Insomnia ou clique no botão [Run in Insomn
 # Fork via GitHub official command line
 # Caso não tenha o GitHub CLI, realize o fork pelo site.
 
-$ gh repo fork HenriqueVazquez/Desafio-2---inicio-fastfeet
+$ gh repo fork HenriqueVazquez/FastfeetBackend
 ```
 
 ```bash
