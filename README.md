@@ -3,11 +3,11 @@
 </h1>
 
 <h3 align="center">
-  Desafio 2: FastFeet, o início
+  Desafio 3: FastFeet, o início
 </h3>
 
 <h3 align="center">
-  :warning: Etapa 1/4 do Desafio Final :warning:
+  :warning: Etapa 2/4 do Desafio Final :warning:
 </h3>
 
 <p align="center">
@@ -19,12 +19,12 @@
 
   <img alt="License" src="https://img.shields.io/badge/license-MIT-blueviolet">
 
-  <a href="https://github.com/HenriqueVazquez/Desafio-2---inicio-fastfeet/stargazers">
-    <img alt="Stargazers" src="https://img.shields.io/github/stars/HenriqueVazquez/Desafio-2---inicio-fastfeet?style=social">
+  <a href="https://github.com/HenriqueVazquez/FastfeetBackend/blob/main/FastFeet.json">
+    <img alt="Stargazers" src="https://img.shields.io/github/stars/HenriqueVazquez/FastFeet-backend?style=social">
   </a>
 </p>
 
-<p>Primeira parte da aplicação back-end do fastfeet!</p>
+<p>Termino back-end do fastfeet!</p>
 
 
   
@@ -43,15 +43,25 @@ Esse projeto foi desenvolvido com as seguintes tecnologias:
 - [prettier](https://eslint.org/)
 - [nodemon](http://nodemon.io/)
 - [sucrase](https://github.com/alangpierce/sucrase#readme)
+- [MongoDB](https://www.mongodb.com/)
+- [Sentry](https://sentry.io/)
+- [Multer](https://github.com/expressjs/multer)
+- [Redis](https://redis.io/)
+- [Bee-queue](https://github.com/bee-queue/bee-queue)
+- [Nodemailer](https://nodemailer.com/about/)
+- [handlebars](https://handlebarsjs.com/)
+- [youch](https://github.com/poppinss/youch)
+- [Date-fns](https://date-fns.org/)
+- [insomnia](https://insomnia.rest/download)
 
 
 
 ## Instalação, execução e desenvolvimento  🤔
 
-Importe o arquivo `Desafio-2---inicio-fastfeet.json` no Insomnia ou clique no botão [Run in Insomnia](#insomniaButton)
+Importe o arquivo `fastfeet.json` no Insomnia ou clique no botão [Run in Insomnia](#insomniaButton)
 
 <p align="center" id="insomniaButton">
-  <a href="https://insomnia.rest/run/?label=Desafio%202%20fastfeet%20inicio&uri=https%3A%2F%2Fgithub.com%2FHenriqueVazquez%2FDesafio-2---inicio-fastfeet%2Fblob%2Fmain%2F.sequelizerc" target="_blank"><img src="https://insomnia.rest/images/run.svg" alt="Run in Insomnia"></a>
+  <a href="https://insomnia.rest/run/?label=FastFeet-Backend&uri=https%3A%2F%2Fgithub.com%2FHenriqueVazquez%2FFastfeetBackend%2Fblob%2Fmain%2FFastFeet.json" target="_blank"><img src="https://insomnia.rest/images/run.svg" alt="Run in Insomnia"></a>
   </p>
   
   ### Pré-requisitos
