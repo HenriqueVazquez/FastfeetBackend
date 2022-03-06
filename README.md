@@ -3,7 +3,7 @@
 </h1>
 
 <h3 align="center">
-  Desafio 3: FastFeet, o início
+  Desafio 3: FastFeet empresa de entrega de encomendas!
 </h3>
 
 <h3 align="center">
@@ -24,7 +24,9 @@
   </a>
 </p>
 
-<p>Termino back-end do fastfeet!</p>
+<p>Termino back-end do fastfeet, empresa que gerencia entrega e entregadores de produtos, contendo ainda banco de dados com dados da entrega, entregador, endereços e imagens com avatar e assinatura da conclusão da entrega</p>
+
+<p>Finished the back-end of fastfeet, a company that manages delivery and delivery of products, also containing a database with delivery data, delivery person, addresses and images with avatar and signature of delivery completion</p>
 
 
   
