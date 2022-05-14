@@ -1,5 +1,6 @@
 import * as Yup from 'yup';
 import { parseISO, isAfter, isBefore, setHours, startOfHour } from 'date-fns';
+import { Op } from 'sequelize';
 
 import Delivery from '../models/Delivery';
 import Deliveryman from '../models/Deliveryman';
@@ -23,7 +24,7 @@ class DeliveryController {
     });
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ Erro: 'Erro na validação!' });
+      return res.status(400).json({ erro: ' Erro na validação!' });
     }
 
     const { product, recipient_id, deliveryman_id } = req.body;
@@ -33,7 +34,7 @@ class DeliveryController {
 
     if (!deliveryman) {
       return res.status(400).json({
-        Erro: 'Entregador não localizado, verifique o ID e tente novamente!',
+        Erro: ' Entregador não localizado, verifique o ID e tente novamente!',
       });
     }
 
@@ -43,7 +44,7 @@ class DeliveryController {
 
     if (!recipient) {
       return res.status(400).json({
-        Erro: 'Endereço não localizado, verifique o ID ou cadastre o endereço!',
+        Erro: ' Endereço não localizado, verifique o ID ou cadastre o endereço!',
       });
     }
 
@@ -84,58 +85,154 @@ class DeliveryController {
   async index(req, res) {
     // recebendo filtros dos query /  getting query filters
 
-    const { page = 1 } = req.query;
+    const { page, productFilter, situation } = req.query;
+    let situatioName = '';
 
-    const deliveries = await Delivery.findAll({
-      order: ['id'],
-      limit: 5,
-      offset: (page - 1) * 5,
-      attributes: [
-        // pegando os dados que queremos trabalhar da tabela delivery
-        // getting the data we want to work with from the delivery table
-        'id',
-        'product',
-        'status',
-        'start_date',
-        'end_date',
-        'canceled_at',
-      ],
-      include: [
-        // pegando os dados que iremos utilizar das tabelas relacionadas
-        // getting the data that we will use from the related tables
-        {
-          model: File_signature,
-          as: 'signature',
-          attributes: ['id', 'path', 'url'],
-        },
-        {
-          model: Deliveryman,
-          as: 'deliveryman',
-          attributes: ['id', 'name'],
+    switch (situation) {
+      case '1':
+        // filtrando entregas com status de postado / filtering deliveries with posted status
+        situatioName = 'Postado';
+        break;
+      case '2':
+        // filtrando entregas com status de Retirado / filtering deliveries with status of Picked Up
+        situatioName = 'Retirado';
+        break;
+      case '3':
+        // filtrando entregas com status de entregue / filtering deliveries with status of Delivered
+        situatioName = 'Entregue';
+        break;
+      case '4':
+        // filtrando entregas com status de cancelado / filtering deliveries with status of Canceled
+        situatioName = 'Cancelado';
+        break;
+      default:
+        situatioName = '';
+        break;
+    }
+
+    const deliveries = productFilter
+      ? await Delivery.findAll({
+          where: {
+            product: {
+              [Op.iLike]: `${productFilter}%`,
+            },
+            status: {
+              [Op.iLike]: `${situatioName}%`,
+            },
+          },
+          order: ['id'],
+          paranoid: false,
+          limit: page ? 5 : null,
+          offset: page ? (page - 1) * 5 : null,
+          attributes: [
+            // pegando os dados que queremos trabalhar da tabela delivery
+            // getting the data we want to work with from the delivery table
+            'id',
+            'product',
+            'status',
+            'start_date',
+            'end_date',
+            'canceled_at',
+          ],
           include: [
+            // pegando os dados que iremos utilizar das tabelas relacionadas
+            // getting the data that we will use from the related tables
             {
-              model: File_avatar,
-              as: 'avatar',
+              model: File_signature,
+              as: 'signature',
               attributes: ['id', 'path', 'url'],
             },
+            {
+              model: Deliveryman,
+              as: 'deliveryman',
+              paranoid: false,
+              attributes: ['id', 'name'],
+              include: [
+                {
+                  model: File_avatar,
+                  as: 'avatar',
+                  attributes: ['id', 'path', 'url'],
+                },
+              ],
+            },
+            {
+              model: Recipient,
+              as: 'recipient',
+              paranoid: false,
+              attributes: [
+                'id',
+                'name',
+                'street',
+                'number',
+                'city',
+                'uf',
+                'zip_code',
+              ],
+            },
           ],
-        },
-        {
-          model: Recipient,
-          as: 'recipient',
+        })
+      : await Delivery.findAll({
+          where: {
+            status: {
+              [Op.iLike]: `${situatioName}%`,
+            },
+          },
+          order: ['id'],
           paranoid: false,
+          limit: page ? 5 : null,
+          offset: page ? (page - 1) * 5 : null,
           attributes: [
+            // pegando os dados que queremos trabalhar da tabela delivery
+            // getting the data we want to work with from the delivery table
             'id',
-            'name',
-            'street',
-            'number',
-            'city',
-            'uf',
-            'zip_code',
+            'product',
+            'status',
+            'start_date',
+            'end_date',
+            'canceled_at',
           ],
-        },
-      ],
-    });
+          include: [
+            // pegando os dados que iremos utilizar das tabelas relacionadas
+            // getting the data that we will use from the related tables
+            {
+              model: File_signature,
+              paranoid: false,
+              as: 'signature',
+              attributes: ['id', 'path', 'url'],
+            },
+            {
+              model: Deliveryman,
+              paranoid: false,
+              as: 'deliveryman',
+              attributes: ['id', 'name'],
+              include: [
+                {
+                  model: File_avatar,
+                  as: 'avatar',
+                  attributes: ['id', 'path', 'url'],
+                },
+              ],
+            },
+            {
+              model: Recipient,
+              as: 'recipient',
+
+              paranoid: false,
+              attributes: [
+                'id',
+                'name',
+                'street',
+                'number',
+                'city',
+                'uf',
+                'zip_code',
+              ],
+            },
+          ],
+        });
+    if (deliveries.length === 0) {
+      return res.status(400).json({ Erro: ' Nenhuma entrega encontrada!' });
+    }
 
     return res.json(deliveries);
   }
@@ -196,7 +293,7 @@ class DeliveryController {
 
     if (!delivery) {
       return res.status(400).json({
-        Erro: 'Encomenda não existe, verifique o ID e tente novamente!',
+        Erro: ' Encomenda não existe, verifique o ID e tente novamente!',
       });
     }
 
@@ -298,7 +395,7 @@ class DeliveryController {
     const signatureExist = await File_avatar.findByPk(signature_id);
     if (signature_id != null) {
       if (!signatureExist) {
-        return res.status(400).json({ Erro: 'o ID da assinatura é invalido!' });
+        return res.status(400).json({ Erro: 'O ID da assinatura é invalido!' });
       }
     }
 
@@ -306,14 +403,14 @@ class DeliveryController {
 
     const deliveryman = await Deliveryman.findByPk(deliveryman_id);
     if (!deliveryman) {
-      return res.status(400).json({ Erro: 'o ID do entregador é invalido!' });
+      return res.status(400).json({ Erro: 'O ID do entregador é invalido!' });
     }
 
     // verificar se o endereço existe / check if the address exists
 
     const recipient = await Recipient.findByPk(recipient_id);
     if (!recipient) {
-      return res.status(400).json({ Erro: 'o ID do entregador é invalido!' });
+      return res.status(400).json({ Erro: 'O ID do entregador é invalido!' });
     }
     // Desestruturando os dados que iremos utilizar / Destructuring the data we will use
 
@@ -430,27 +527,38 @@ class DeliveryController {
       // case 3 performs the adjustment from delivery to delivered
 
       case 3:
+        // verificando se a entrega  foi cancelada / checking if the delivery has been canceled
+
+        if (delivery.status === 'Cancelado' && delivery.canceled_at != null) {
+          return res.status(400).json({
+            Erro: 'Entrega canceladas, precisam ser postadas!',
+          });
+        }
+
+        // Verificar se a encomenda já foi entregue / Check if the order has already been delivered
+        if (delivery.status === 'Entregue' && delivery.end_date != null) {
+          return res.status(400).json({ Erro: 'Entrega já finalizada!' });
+        }
+
         // verificando se a assinatura do entregador foi informada
         // checking if the delivery person's signature was informed
 
         if (signature_id == null) {
-          return res.status(400).json({ Erro: 'informe a assinatura' });
-        }
-
-        // Verificar se a encomenda já foi entregue / Check if the order has already been delivered
-
-        if (delivery.status === 'Entregue' && delivery.end_date != null) {
-          return res.status(400).json({ Erro: 'Entrega já finalizada!' });
+          return res.status(400).json({
+            Erro: 'Informe a assinatura do entregador!',
+          });
         }
 
         // verificando se a encomenda foi retirada para poder entregar
         // checking if the order has been picked up to be able to deliver
 
         if (delivery.status !== 'Retirado' || delivery.start_date == null) {
-          return res
-            .status(400)
-            .json({ Erro: 'Entrega só pode ser finalizada, após a retirada!' });
+          return res.status(400).json({
+            Erro: 'Entrega só pode ser finalizada, após a retirada!',
+            description: 'Entrega só pode ser finalizada, após a retirada!',
+          });
         }
+
         status = 'Entregue';
         deleted_at = null;
         end_date = new Date();
@@ -478,7 +586,6 @@ class DeliveryController {
         }
 
         status = 'Cancelado';
-        deleted_at = new Date();
         signature_id = null;
         start_date = null;
         end_date = null;
@@ -491,6 +598,7 @@ class DeliveryController {
           deliveryman,
           recipient,
           product: delivery.product,
+          canceled_at,
         });
         break;
 
@@ -582,7 +690,7 @@ class DeliveryController {
         {
           model: Recipient,
           as: 'recipient',
-          paranoid: true,
+          paranoid: false,
           attributes: [
             'id',
             'name',
@@ -604,7 +712,7 @@ class DeliveryController {
       });
     }
 
-    let { status, end_date, canceled_at, deleted_at } = delivery;
+    let { status, end_date, canceled_at } = delivery;
 
     // verificando se a encomenda já foi entregue
     // checking if the order has already been delivered
@@ -625,7 +733,7 @@ class DeliveryController {
     }
 
     status = 'Cancelado';
-    deleted_at = new Date();
+
     end_date = null;
     canceled_at = new Date();
 
@@ -634,13 +742,13 @@ class DeliveryController {
       status,
       end_date,
       canceled_at,
-      deleted_at,
     });
 
     // adicionando entrega para enviar email de cancelamento
     // adding delivery to send cancellation email
     await Queue.add(CancellationDeliveryMail.key, {
       delivery,
+      canceled_at,
     });
 
     return res.json(delivery);

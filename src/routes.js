@@ -56,7 +56,7 @@ routes.use(authMiddleware);
 // Routes below will be checked for tokens
 
 // Rotas de destinadorios / Destination routes
-routes.post('/recipients', RecipientController.store);
+routes.post('/recipient', RecipientController.store);
 routes.put('/recipients/:id', RecipientController.update);
 routes.get('/recipients', RecipientController.index);
 routes.get('/recipients/:id', RecipientController.show);

@@ -273,8 +273,8 @@ class DeliverymanDeliveryController {
     // verificando se a hora informada esta dentro do horarios estipulados para retirada
     // checking if the time informed is within the stipulated hours for withdrawal
     if (
-      isBefore(startDateISO, setHours(new Date(), 7)) ||
-      isAfter(startDateISO, setHours(new Date(), 17))
+      isBefore(startDateISO, setHours(startDateISO, 7)) ||
+      isAfter(startDateISO, setHours(startDateISO, 17))
     ) {
       return res.status(400).json({
         Erro: 'Informe uma data de retirada, entre as 08:00 até as 19:59!',

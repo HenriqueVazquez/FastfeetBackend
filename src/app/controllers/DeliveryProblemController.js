@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 
-import deliveryProblemIntersect from '../../util/ArrayIntersect';
+// import deliveryProblemIntersect from '../../util/ArrayIntersect';
 
 import Delivery from '../models/Delivery';
 import Recipient from '../models/Recipient';
@@ -64,6 +64,8 @@ class DeliveryProblemController {
     const deliveryProblems = await DeliveryProblem.find()
       .skip((page - 1) * 5)
       .limit(5);
+
+    /*
     // pegando id das entregas dos problemas cadastrados no mongoDB
     // getting id of deliveries of problems registered in mongoDB
 
@@ -116,8 +118,9 @@ class DeliveryProblemController {
         })
       )
     );
+    */
 
-    return res.json(deliveryProblemIntersect(deliveryProblems, deliveries));
+    return res.json(deliveryProblems);
   }
 
   // Método para buscar um problema por id / Method to search for a problem by id
@@ -215,7 +218,7 @@ class DeliveryProblemController {
     // Checking if delivery was canceled
 
     if (delivery.status === 'Cancelado' && delivery.canceled_at != null) {
-      res.status(400).json({ Erro: 'Encomenda já foi cancelada' });
+      return res.status(400).json({ Erro: 'Encomenda já foi cancelada' });
     }
 
     // Verificando se encomenda já foi entregue
@@ -232,7 +235,6 @@ class DeliveryProblemController {
     await delivery.update({
       canceled_at: new Date(),
       status: 'Cancelado',
-      deleted_at: new Date(),
     });
 
     // cadastrando para a fila o email de cancelamento

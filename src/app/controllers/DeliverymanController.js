@@ -1,6 +1,7 @@
 import * as Yup from 'yup';
 import { Op } from 'sequelize';
 import Deliveryman from '../models/Deliveryman';
+import Delivery from '../models/Delivery';
 import File_avatar from '../models/File_avatar';
 
 class DeliverymanController {
@@ -53,14 +54,14 @@ class DeliverymanController {
 
   async index(req, res) {
     // recebendo filtros dos query /  getting query filters
-    const { page = 1, filterName } = req.query;
+    const { page, nameFilter } = req.query;
     // utilizando operação ternaria para utilizar ou não o filtro do query
     // using ternary operation to use or not the query filter
-    const deliverymen = filterName
+    const deliverymen = nameFilter
       ? await Deliveryman.findAll({
           where: {
             name: {
-              [Op.iLike]: `${filterName}%`,
+              [Op.iLike]: `${nameFilter}%`,
             },
           },
 
@@ -69,8 +70,8 @@ class DeliverymanController {
 
           attributes: ['id', 'name', 'email', 'status'],
           order: ['id'],
-          limit: 5,
-          offset: (page - 1) * 5,
+          limit: page ? 5 : null,
+          offset: page ? (page - 1) * 5 : null,
           // pegando os dados que iremos utilizar das tabelas relacionadas
           // getting the data that we will use from the related tables
           include: [
@@ -84,8 +85,8 @@ class DeliverymanController {
       : await Deliveryman.findAll({
           attributes: ['id', 'name', 'email', 'status'],
           order: ['id'],
-          limit: 5,
-          offset: (page - 1) * 5,
+          limit: page ? 5 : null,
+          offset: page ? (page - 1) * 5 : null,
           include: [
             {
               model: File_avatar,
@@ -133,7 +134,7 @@ class DeliverymanController {
       name: Yup.string(),
       email: Yup.string().email(),
       avatar_id: Yup.number().nullable(),
-      situationStatus: Yup.number().min(1).max(2),
+      statuSituation: Yup.number().min(1).max(2),
     });
 
     if (!(await schema.isValid(req.body))) {
@@ -142,7 +143,7 @@ class DeliverymanController {
 
     const { id } = req.params;
 
-    const { name, email, avatar_id, situationStatus } = req.body;
+    const { name, email, avatar_id, statuSituation } = req.body;
 
     // verificar se ID foi informado / check if ID has been provided
 
@@ -165,9 +166,6 @@ class DeliverymanController {
         },
       ],
     });
-
-    // verificar se o entregador existe
-    // check if the deliveryman exists
 
     if (!deliveryman) {
       return res.status(400).json({
@@ -198,8 +196,19 @@ class DeliverymanController {
     }
     let { status } = deliveryman;
     // verificar status / check status
-    if (situationStatus) {
-      switch (situationStatus) {
+    if (statuSituation) {
+      const response = await Delivery.findAll({
+        where: {
+          deliveryman_id: id,
+        },
+      });
+
+      if (response.length !== 0 && statuSituation === 2) {
+        return res.status(400).json({
+          Erro: 'Entregador ainda possui entregas cadastradas, não é possivel desativar! ',
+        });
+      }
+      switch (statuSituation) {
         case 1:
           status = 'Ativo';
           break;
@@ -216,6 +225,7 @@ class DeliverymanController {
     }
     // ajustando o campo deleted_at conforme o status
     // adjusting deleted_at field according to status
+
     const deleted_at =
       status === 'Ativo'
         ? (deliveryman.deleted_at = null)
@@ -231,12 +241,40 @@ class DeliverymanController {
   async delete(req, res) {
     const { id } = req.params;
 
-    const deliveryman = await Deliveryman.findByPk(id);
+    const deliveryman = await Deliveryman.findByPk(id, {
+      paranoid: false,
+      attributes: ['id', 'name', 'email', 'avatar_id', 'deleted_at', 'status'],
+      include: [
+        {
+          model: File_avatar,
+          as: 'avatar',
+          attributes: ['path', 'url'],
+        },
+      ],
+    });
 
     // verificar se usuario existe / check if user exists
     if (!deliveryman) {
       return res.status(400).json({
         ERRO: 'Entregador não encontrado, verifique o ID e tente novamente!',
+      });
+    }
+
+    const response = await Delivery.findAll({
+      where: {
+        deliveryman_id: id,
+      },
+    });
+
+    if (response.length !== 0) {
+      return res.status(400).json({
+        Erro: 'Entregador ainda possui entregas cadastradas, não é possivel desativar! ',
+      });
+    }
+
+    if (deliveryman.status === 'Desativado') {
+      return res.status(400).json({
+        Erro: 'Entregador já está desativado! ',
       });
     }
 

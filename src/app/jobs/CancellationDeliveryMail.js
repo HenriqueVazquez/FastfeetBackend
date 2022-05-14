@@ -16,30 +16,30 @@ class CancellationDeliveryMail {
   async handle({ data }) {
     // Desestruturando informações necessarias para preencher o email
     // Destructuring information needed to fill the email
-    const { delivery } = data;
+    const { product, deliveryman, recipient, canceled_at } = data;
 
     // Método que preenche os dados do email e efetivamente faz o envio
     // Method that fills in the email data and effectively sends it
     await Mail.sendMail({
-      to: `${delivery.deliveryman.name} <${delivery.deliveryman.email}>`,
+      to: `${deliveryman.name} <${deliveryman.email}>`,
       subject: `Uma encomenda foi cancelada!`,
       template: 'CancellationDelivery',
       context: {
-        deliveryman: delivery.deliveryman.name,
+        deliveryman: deliveryman.name,
         date: format(
-          parseISO(delivery.canceled_at),
+          parseISO(canceled_at),
           "'dia 'dd' de 'MMMM', às 'H:mm'h'",
           {
             locale: pt,
           }
         ),
-        product: delivery.product,
-        recipient: delivery.recipient.name,
-        city: delivery.recipient.city,
-        uf: delivery.recipient.uf,
-        street: delivery.recipient.street,
-        number: delivery.recipient.number,
-        zip_code: delivery.recipient.zip_code,
+        product,
+        recipient: recipient.name,
+        city: recipient.city,
+        uf: recipient.uf,
+        street: recipient.street,
+        number: recipient.number,
+        zip_code: recipient.zip_code,
       },
     });
   }

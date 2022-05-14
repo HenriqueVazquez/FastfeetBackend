@@ -8,7 +8,7 @@ class Deliveryman extends Model {
         email: Sequelize.STRING,
         status: Sequelize.STRING,
         deleted_at: Sequelize.DATE,
-        situationStatus: Sequelize.VIRTUAL,
+        statuSituation: Sequelize.VIRTUAL,
       },
       {
         sequelize,

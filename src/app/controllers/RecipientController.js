@@ -1,5 +1,7 @@
 import * as Yup from 'yup';
+import { Op } from 'sequelize';
 import Recipient from '../models/Recipient';
+import Delivery from '../models/Delivery';
 
 class RecipientsController {
   // Cadastro de destinatario / recipient registration
@@ -99,23 +101,46 @@ class RecipientsController {
   // Listando todos endereços / Listing all addresses
 
   async index(req, res) {
-    const { page = 1 } = req.query;
-    const recipient = await Recipient.findAll({
-      attributes: [
-        'id',
-        'name',
-        'street',
-        'number',
-        'complement',
-        'uf',
-        'city',
-        'zip_code',
-      ],
-      order: ['id'],
-      limit: 5,
-      offset: (page - 1) * 5,
-    });
-
+    const { page, recipientName } = req.query;
+    const recipient = recipientName
+      ? await Recipient.findAll({
+          where: {
+            name: {
+              [Op.iLike]: `${recipientName}%`,
+            },
+          },
+          attributes: [
+            'id',
+            'name',
+            'street',
+            'number',
+            'complement',
+            'uf',
+            'city',
+            'zip_code',
+          ],
+          order: ['id'],
+          limit: page ? 5 : null,
+          offset: page ? (page - 1) * 5 : null,
+        })
+      : await Recipient.findAll({
+          attributes: [
+            'id',
+            'name',
+            'street',
+            'number',
+            'complement',
+            'uf',
+            'city',
+            'zip_code',
+          ],
+          order: ['id'],
+          limit: page ? 5 : null,
+          offset: page ? (page - 1) * 5 : null,
+        });
+    if (recipient.length === 0) {
+      return res.status(400).json({ Erro: 'Destinatário não existe!' });
+    }
     return res.json(recipient);
   }
 
@@ -149,6 +174,18 @@ class RecipientsController {
     const { id } = req.params;
 
     const recipient = await Recipient.findByPk(id);
+
+    const response = await Delivery.findAll({
+      where: {
+        recipient_id: id,
+      },
+    });
+
+    if (response.length !== 0) {
+      return res.status(400).json({
+        Erro: 'Endereço possui entregas cadastradas, não é possivel desativar! ',
+      });
+    }
 
     // verificar se usuario existe / check if the user exists
     if (!recipient) {

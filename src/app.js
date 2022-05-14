@@ -26,11 +26,11 @@ class App {
     this.server.use(cors());
     this.server.use(express.json());
     this.server.use(
-      '/files/avatar',
+      '/files',
       express.static(path.resolve(__dirname, '..', 'tmp', 'uploads', 'avatar'))
     );
     this.server.use(
-      '/files/signature',
+      '/files',
       express.static(
         path.resolve(__dirname, '..', 'tmp', 'uploads', 'signature')
       )

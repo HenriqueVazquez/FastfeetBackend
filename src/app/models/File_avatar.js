@@ -9,7 +9,7 @@ class File_avatar extends Model {
         url: {
           type: Sequelize.VIRTUAL,
           get() {
-            return `${process.env.APP_URL}/files/avatar/${this.path}`;
+            return `${process.env.APP_URL}/files/${this.path}`;
           },
         },
       },
