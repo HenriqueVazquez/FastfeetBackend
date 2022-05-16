@@ -79,7 +79,7 @@ Importe o arquivo `fastfeet.json` no Insomnia ou clique no botão [Run in Insomn
 - Execute `yarn sequelize db:migrate` para executar as migrations;
 - Execute `yarn sequelize db:seed:all` para executar a seed;
 - Para executar somente a migration de `admin-user` execute o comando `yarn sequelize db:seed --seed 20200504181041-admin-user.js`
-- Execute `yarn start` para iniciar o servidor;
+- Execute `yarn dev` para iniciar o servidor;
 
 ## Como contribuir🤔
 
