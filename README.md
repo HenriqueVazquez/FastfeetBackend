@@ -3,7 +3,7 @@
 </h1>
 
 <h3 align="center">
-  Desafio 3: FastFeet empresa de entrega de encomendas!
+  Desafio 2: FastFeet empresa de entrega de encomendas!
 </h3>
 
 <h3 align="center">
@@ -19,8 +19,8 @@
 
   <img alt="License" src="https://img.shields.io/badge/license-MIT-blueviolet">
 
-  <a href="https://github.com/HenriqueVazquez/FastfeetBackend/blob/main/FastFeet.json">
-    <img alt="Stargazers" src="https://img.shields.io/github/stars/HenriqueVazquez/FastFeet-backend?style=social">
+  <a href="https://github.com/HenriqueVazquez/FastfeetBackend/stargazers">
+    <img alt="Stargazers" src="https://img.shields.io/github/stars/HenriqueVazquez/FastfeetBackend?style=social">
   </a>
 </p>
 
