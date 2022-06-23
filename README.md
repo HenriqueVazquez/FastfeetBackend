@@ -3,7 +3,7 @@
 </h1>
 
 <h3 align="center">
-  Desafio 3: FastFeet empresa de entrega de encomendas!
+  Desafio 2: FastFeet empresa de entrega de encomendas!
 </h3>
 
 <h3 align="center">
@@ -19,8 +19,8 @@
 
   <img alt="License" src="https://img.shields.io/badge/license-MIT-blueviolet">
 
-  <a href="https://github.com/HenriqueVazquez/FastfeetBackend/blob/main/FastFeet.json">
-    <img alt="Stargazers" src="https://img.shields.io/github/stars/HenriqueVazquez/FastFeet-backend?style=social">
+  <a href="https://github.com/HenriqueVazquez/FastfeetBackend/stargazers">
+    <img alt="Stargazers" src="https://img.shields.io/github/stars/HenriqueVazquez/FastfeetBackend?style=social">
   </a>
 </p>
 
@@ -79,7 +79,7 @@ Importe o arquivo `fastfeet.json` no Insomnia ou clique no botão [Run in Insomn
 - Execute `yarn sequelize db:migrate` para executar as migrations;
 - Execute `yarn sequelize db:seed:all` para executar a seed;
 - Para executar somente a migration de `admin-user` execute o comando `yarn sequelize db:seed --seed 20200504181041-admin-user.js`
-- Execute `yarn start` para iniciar o servidor;
+- Execute `yarn dev` para iniciar o servidor;
 
 ## Como contribuir🤔
 
