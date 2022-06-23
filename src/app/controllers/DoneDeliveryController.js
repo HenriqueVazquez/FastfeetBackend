@@ -10,7 +10,6 @@ class DoneDeliveryController {
   // method to end delivery
   async update(req, res) {
     const schema = Yup.object().shape({
-      id: Yup.number().required(),
       signature_id: Yup.number().required(),
     });
 
@@ -18,12 +17,12 @@ class DoneDeliveryController {
       return res.status(400).json({ Erro: 'Erro na validação' });
     }
     // pegando id do entregador // getting deliveryman id
-    const { id: deliveryman_id } = req.params;
+    const { deliverymanId, deliveryId } = req.params;
     // pegando id da encomenda e da assinatura
     // getting order and signature id
-    const { id: delivery_id, signature_id } = req.body;
+    const { signature_id } = req.body;
 
-    const deliveryman = await Deliveryman.findByPk(deliveryman_id);
+    const deliveryman = await Deliveryman.findByPk(deliverymanId);
 
     // Verificar se o entregador existe / Check if the courier exists
 
@@ -33,7 +32,7 @@ class DoneDeliveryController {
         .json({ Erro: 'Entregador não localizado, verifique o ID!' });
     }
 
-    const delivery = await Delivery.findByPk(delivery_id, {
+    const delivery = await Delivery.findByPk(deliveryId, {
       attributes: [
         'id',
         'product',
@@ -87,7 +86,7 @@ class DoneDeliveryController {
     }
     // verificando se o id do entregador é o mesmo da entrega
     // checking if the delivery id is the same as the delivery
-    if (delivery.deliveryman.id !== Number(deliveryman_id)) {
+    if (delivery.deliveryman.id !== Number(deliverymanId)) {
       return res.status(400).json({
         Erro: 'Entrega não cadastrada para o ID do entregador informado!',
       });

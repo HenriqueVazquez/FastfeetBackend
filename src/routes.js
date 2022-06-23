@@ -20,16 +20,13 @@ import authMiddleware from './app/middlewares/auth';
 
 const routes = new Router();
 const uploadAvatar = multer(multerConfigAvatar);
-const uploadSignature = multer(multerConfigSignature);
+const upload = multer(multerConfigSignature);
 
 routes.post('/sessions', SessionController.store);
 
-// Rota de uploads de signature / Signature upload route
-routes.post(
-  '/files/signature',
-  uploadSignature.single('file'),
-  FileSController.store
-);
+// Rota para buscar entregador por id / Deliveryman by id route
+
+routes.get('/deliveryman/:id', DeliverymanController.show);
 
 // Rotas para entregadores verificarem suas entregas / Routes for couriers to check their deliveries
 
@@ -38,18 +35,27 @@ routes.get('/deliveryman/:id/deliveries', DeliverymanDeliveryController.index);
 // Rota para entregadores retirar a entrega / Route for couriers to pick up delivery
 
 routes.put(
-  '/deliveryman/:id/delivery/withdrawal',
+  '/deliveryman/:deliverymanId/delivery/:deliveryId',
   DeliverymanDeliveryController.update
 );
 
 // rota para entregador finalizar entrega / route for delivery person finalize delivery
 
-routes.put('/deliveryman/:id/delivery/done', DoneDeliveryController.update);
+routes.put(
+  '/deliveryman/:deliverymanId/delivery/:deliveryId/done',
+  DoneDeliveryController.update
+);
 
 // Rotas para cadastrar problemas em entrega por entregadores
 // Routes to register delivery problems by couriers
 
 routes.post('/delivery/:id/problems', DeliveryProblemController.store);
+
+routes.get('/deliveries/problems', DeliveryProblemController.index);
+routes.get('/delivery/:id/problems', DeliveryProblemController.show);
+
+// Rota de uploads de signature / Signature upload route
+routes.post('/files', upload.single('file'), FileSController.store);
 
 routes.use(authMiddleware);
 // Rotas abaixo serão verificadas os tokens
@@ -65,7 +71,6 @@ routes.delete('/recipients/:id', RecipientController.delete);
 // Rotas de Entregadores / Delivery Routes
 routes.post('/deliveryman', DeliverymanController.store);
 routes.get('/deliverymen', DeliverymanController.index);
-routes.get('/deliveryman/:id', DeliverymanController.show);
 routes.put('/deliveryman/:id', DeliverymanController.update);
 routes.delete('/deliveryman/:id', DeliverymanController.delete);
 
@@ -87,8 +92,6 @@ routes.post(
 // Rotas para problemas de entrega que precisam de token
 // Routes for delivery issues that need a token
 
-routes.get('/deliveries/problems', DeliveryProblemController.index);
-routes.get('/delivery/:id/problem', DeliveryProblemController.show);
 routes.delete('/problem/:id/cancel-delivery', DeliveryProblemController.delete);
 
 export default routes;

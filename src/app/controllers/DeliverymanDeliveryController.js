@@ -145,7 +145,6 @@ class DeliverymanDeliveryController {
   // update delivery method to withdrawn status and informing the withdrawal date
   async update(req, res) {
     const schema = Yup.object().shape({
-      id: Yup.number().required(),
       start_date: Yup.date().required(),
     });
 
@@ -153,13 +152,14 @@ class DeliverymanDeliveryController {
       return res.status(400).json({ Erro: 'Erro na validação!' });
     }
 
-    // buscando do body o id da entrega e a data inicial
-    // searching from the body the delivery id and the start date
+    // buscando do body  a data inicial
+    // searching from the body  the start date
 
-    const { id: delivery_id, start_date } = req.body;
-    // buscando o id do entregador do params
-    // fetching the delivery id from params
-    const { id: deliveryman_id } = req.params;
+    const { start_date } = req.body;
+    // buscando o id do entregador e da entrega do params
+    // fetching the delivery id and deliveryman id from params
+    const { deliverymanId: deliveryman_id, deliveryId: delivery_id } =
+      req.params;
 
     const deliveryman = await Deliveryman.findByPk(deliveryman_id);
 
@@ -274,7 +274,7 @@ class DeliverymanDeliveryController {
     // checking if the time informed is within the stipulated hours for withdrawal
     if (
       isBefore(startDateISO, setHours(startDateISO, 7)) ||
-      isAfter(startDateISO, setHours(startDateISO, 17))
+      isAfter(startDateISO, setHours(startDateISO, 18))
     ) {
       return res.status(400).json({
         Erro: 'Informe uma data de retirada, entre as 08:00 até as 19:59!',
