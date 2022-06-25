@@ -7,7 +7,9 @@
     "dev": "nodemon src/server.js",
     "queue": "nodemon src/queue.js",
     "dev:debug": "nodemon --inspect src/server.js",
-    "error": "yarn eslint --fix src --ext .js"
+    "error": "yarn eslint --fix src --ext .js",
+    "build": "sucrase ./src -d ./dist --transforms imports",
+    "start": "node dist/server.js"
   },
   "devDependencies": {
     "@faker-js/faker": "^6.0.0-alpha.7",
