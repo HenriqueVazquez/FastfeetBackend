@@ -5,25 +5,25 @@ networks:
     driver: bridge
 
 services:
-  FastFeet:
+  fastfeetbd:
     build: .
     volumes:
       - .:/home/node/api
     environment:
-      - DB_HOST=postgresFast
-      - REDIS_URL=redisFast
-      - MONGO_URL=mongoFast
+      - DB_HOST=fastfeet
+      - REDIS_URL=redisfastfeet
+      - MONGO_URL=mongofastfeet
     depends_on:
-      - postgresFast
-      - mongoFast
+      - fastfeet
+      - mongofastfeet
     networks:
       - fastfeet-network
-    container_name: FastFeet
+    container_name: fastfeet
     command: yarn dev
     ports:
       - '3333:3333'
 
-  fastQueue:
+  fastqueue:
     build: .
     environment:
       - DB_HOST=fastfeet
